@@ -6,7 +6,8 @@ function Expenses() {
     const [description, setDescription] = useState('')
     const [amount, setAmount] = useState('')
     const [date, setDate] = useState('')
-    const [error, setError] = ('')
+    const [error, setError] = useState('')
+    const [editingExpense, setEditingExpense] = useState(null)
     const navigate = useNavigate()
 
     const token = localStorage.getItem('token')
@@ -68,12 +69,42 @@ function Expenses() {
         }
     }
 
+    const handleEdit = async (expense) => {
+        setEditingExpense(expense)
+        setDescription(expense.description)
+        setAmount(expense.amount)
+        setDate(expense.date)
+    }
+
+    const handleUpdate = async (e) => {
+        e.preventDefault()
+
+        const response = await fetch(`http://localhost:5196/api/expenses/${editingExpense.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ description, amount: parseFloat(amount), date })
+        })
+
+        if (response.ok) {
+            setDescription('')
+            setAmount('')
+            setDate('')
+            setEditingExpense(null)
+            fetchExpenses()
+        } else {
+            setError('Error updating expense')
+        }
+    }
+
     return (
         <div>
             <h1>Expenses</h1>
             {error && <p>{error}</p>}
 
-            <form onSubmit={handleCreate}>
+            <form onSubmit={(editingExpense ? handleUpdate : handleCreate)}>
                 <input
                     type='text'
                     placeholder='Description'
@@ -94,7 +125,7 @@ function Expenses() {
                     onChange={(e) => setDate(e.target.value)}
                 />
 
-                <button type='submit'>Add Expense</button>
+                <button type='submit'>{editingExpense ? 'Update' : 'Add Expense'}</button>
             </form>
 
             <ul>
@@ -102,6 +133,7 @@ function Expenses() {
                     <li key={expense.id}>
                         {expense.date} - {expense.description} - {expense.amount}
                         <button onClick={() => handleDelete(expense.id)}>Delete</button>
+                        <button onClick={() => handleEdit(expense)}>Edit</button>
                     </li>
                 ))}
             </ul>
