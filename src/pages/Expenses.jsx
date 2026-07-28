@@ -99,9 +99,15 @@ function Expenses() {
         }
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
+
     return (
         <div>
             <h1>Expenses</h1>
+            <button onClick={handleLogout}>Logout</button>
             {error && <p>{error}</p>}
 
             <form onSubmit={(editingExpense ? handleUpdate : handleCreate)}>
