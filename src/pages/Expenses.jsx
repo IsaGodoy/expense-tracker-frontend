@@ -17,7 +17,7 @@ function Expenses() {
     }, [])
 
     const fetchExpenses = async () => {
-        const response = await fetch('http://localhost:5196/api/expenses', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/expenses`, {
             headers: { 'Authorization': `Bearer ${token}` }
         })
 
