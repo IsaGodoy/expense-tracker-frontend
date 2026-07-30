@@ -1,55 +1,71 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
-function Register(){
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const navigate = useNavigate()
+function Register() {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
 
-    const handleSubmit = async(e) => {
-        e.preventDefault()
-        setError('')
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
 
-        const response = await fetch('http://localhost:5196/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        })
+    const response = await fetch('http://localhost:5196/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    })
 
-        if(response.ok) {
-            navigate('/login')
-        } else {
-            setError('There was an error. Please try again')
-        }
+    if (response.ok) {
+      navigate('/login')
+    } else {
+      setError('There was an error. Please try again')
     }
+  }
 
-    return (
-        <div>
-            <h1>Register</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        value= {username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e)=>setPassword(e.target.value)}
-                    />
-                </div>
-                {error && <p>{error}</p>}
-                <button type="submit">Register</button>
-            </form>
-            <p>Already have an account? <Link to="/login">Login</Link> </p>
-        </div>
-    )
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-sm w-full max-w-sm">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Register</h1>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-600">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-600">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
+            />
+          </div>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            className="bg-gray-800 text-white py-2 rounded text-sm hover:bg-gray-700 transition-colors"
+          >
+            Register
+          </button>
+        </form>
+
+        <p className="text-sm text-gray-500 mt-4">
+          Already have an account? <Link to="/login" className="text-gray-800 underline">Login</Link>
+        </p>
+      </div>
+    </div>
+  )
 }
 
 export default Register

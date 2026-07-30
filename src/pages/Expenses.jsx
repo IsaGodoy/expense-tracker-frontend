@@ -35,7 +35,7 @@ function Expenses() {
     }
 
     const handleCreate = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         const response = await fetch('http://localhost:5196/api/expenses', {
             method: 'POST',
@@ -69,7 +69,7 @@ function Expenses() {
         }
     }
 
-    const handleEdit = async (expense) => {
+    const handleEdit = (expense) => {
         setEditingExpense(expense)
         setDescription(expense.description)
         setAmount(expense.amount)
@@ -105,44 +105,97 @@ function Expenses() {
     }
 
     return (
-        <div>
-            <h1>Expenses</h1>
-            <button onClick={handleLogout}>Logout</button>
-            {error && <p>{error}</p>}
+        <div className="min-h-screen bg-gray-50">
+            <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+                <h1 className="text-xl font-semibold text-gray-800">Expenses</h1>
+                <button
+                    onClick={handleLogout}
+                    className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
+                >
+                    Logout
+                </button>
+            </nav>
 
-            <form onSubmit={(editingExpense ? handleUpdate : handleCreate)}>
-                <input
-                    type='text'
-                    placeholder='Description'
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
+            <div className="max-w-2xl mx-auto px-4 py-8">
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-                <input
-                    type='number'
-                    placeholder='Amount'
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h2 className="text-sm font-medium text-gray-700 mb-4">
+                        {editingExpense ? 'Edit Expense' : 'Add Expense'}
+                    </h2>
+                    <form onSubmit={editingExpense ? handleUpdate : handleCreate} className="flex flex-col gap-3">
+                        <input
+                            type="text"
+                            placeholder="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
+                        />
+                        <input
+                            type="number"
+                            placeholder="Amount"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
+                        />
+                        <input
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
+                        />
+                        <button
+                            type="submit"
+                            className="bg-gray-800 text-white py-2 rounded text-sm hover:bg-gray-700 transition-colors"
+                        >
+                            {editingExpense ? 'Update' : 'Add Expense'}
+                        </button>
+                        {editingExpense && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditingExpense(null)
+                                    setDescription('')
+                                    setAmount('')
+                                    setDate('')
+                                }}
+                                className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        )}
+                    </form>
+                </div>
 
-                <input
-                    type='date'
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                />
-
-                <button type='submit'>{editingExpense ? 'Update' : 'Add Expense'}</button>
-            </form>
-
-            <ul>
-                {expenses.map(expense => (
-                    <li key={expense.id}>
-                        {expense.date} - {expense.description} - {expense.amount}
-                        <button onClick={() => handleDelete(expense.id)}>Delete</button>
-                        <button onClick={() => handleEdit(expense)}>Edit</button>
-                    </li>
-                ))}
-            </ul>
+                <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+                    {expenses.length === 0 && (
+                        <p className="text-sm text-gray-500 p-6 text-center">No expenses yet.</p>
+                    )}
+                    {expenses.map(expense => (
+                        <div key={expense.id} className="flex items-center justify-between px-6 py-4">
+                            <div>
+                                <p className="text-sm font-medium text-gray-800">{expense.description}</p>
+                                <p className="text-xs text-gray-500">{expense.date}</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <span className="text-sm font-medium text-gray-800">{expense.amount}</span>
+                                <button
+                                    onClick={() => handleEdit(expense)}
+                                    className="text-xs text-gray-500 hover:text-gray-800 transition-colors"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(expense.id)}
+                                    className="text-xs text-red-400 hover:text-red-600 transition-colors"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     )
 }
