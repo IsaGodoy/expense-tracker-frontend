@@ -37,7 +37,7 @@ function Expenses() {
     const handleCreate = async (e) => {
         e.preventDefault()
 
-        const response = await fetch('http://localhost:5196/api/expenses', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/expenses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ function Expenses() {
     }
 
     const handleDelete = async (id) => {
-        const response = await fetch(`http://localhost:5196/api/expenses/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/expenses/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         })
@@ -79,7 +79,7 @@ function Expenses() {
     const handleUpdate = async (e) => {
         e.preventDefault()
 
-        const response = await fetch(`http://localhost:5196/api/expenses/${editingExpense.id}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/expenses/${editingExpense.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
